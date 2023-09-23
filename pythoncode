@@ -1,0 +1,735 @@
+  import pyttsx3
+from pywhatkit.main import check_window
+import speech_recognition as sr
+import datetime
+from playsound import playsound
+import wikipedia
+import webbrowser
+import pywhatkit
+import pyautogui
+import os
+import subprocess
+import keyboard
+import pyjokes
+from tkinter import EXCEPTION, Label
+from tkinter import Entry
+from tkinter import Button
+from tkinter import Tk
+from tkinter import StringVar
+from PyDictionary import PyDictionary as diction
+from pytube import YouTube
+from googletrans import Translator
+import wikipedia
+import smtplib
+import json
+import requests
+from urllib.request import urlopen
+
+engine = pyttsx3.init("sapi5")
+voice_tone = engine.getProperty("voices")
+engine.setProperty("voice", voice_tone[0].id)
+engine.setProperty("rate", 200)
+
+
+def speak(audio):
+    print("   ")
+    engine.say(audio)
+    print(f">> {audio}")
+    print("   ")
+    engine.runAndWait()
+
+def listenCommandHindi():
+    command = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening.....")
+        command.pause_threshold = 1
+        audio = command.listen(source)
+
+    try:
+        print("Recognizing....")
+        query = command.recognize_google(audio, language="hi")
+        print(f"You Said: {query}")
+
+    except Exception as error:
+        print("Sorry, please try again")
+        return("None")
+
+    return query.lower()
+
+
+def listenCommand():
+    command = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening.....")
+        command.pause_threshold = 1
+        audio = command.listen(source)
+
+    try:
+        print("Recognizing....")
+        query = command.recognize_google(audio, language="en-in")
+        print(f"You Said: {query}")
+
+    except Exception as error:
+        print("Sorry, please try again")
+        return "None"
+
+    query = query.lower()
+    return query
+
+
+def tran():
+    speak("Translate my words to hindi!")
+    line = listenCommandHindi()
+    translater = Translator()
+    result = translater.translate(line)
+    speak(result)
+
+
+def whatsapp():
+    check_window()
+    speak("Tell me the name of the person, kindly speak unknown if phone directory is not linked yet")
+    name = listenCommand()
+
+    if "dad" in name:
+        speak("Tell me the message!")
+        msg = listenCommand()
+        speak("when do you want message to be delivered?")
+        whatTime = listenCommand()
+        if "right now" in whatTime:
+            pywhatkit.sendwhatmsg_instantly("+919698458310", msg, 20)
+            speak("Message sent")
+
+        elif "instantly" in whatTime:
+            pywhatkit.sendwhatmsg_instantly("+919698458310", msg, 20)
+            speak("Message sent")
+
+        else:
+            speak("Time in Hour!")
+            hour = int(listenCommand())
+            speak("Time in minutes!")
+            minutes = int(listenCommand())
+            pywhatkit.sendwhatmsg("+919698458310", msg, hour, minutes, 20)
+            speak("okay sir, message will be send on time")
+
+    elif "unknown" in name:
+        speak("Tell me the phone number")
+        phoneNumber = listenCommand()
+        ph = "+91" + phoneNumber
+        speak("Tell me the message!")
+        msg = listenCommand()
+        speak("when do you want message to be delivered?, instantly or after some time")
+        whatTime = listenCommand()
+        if "right now" in whatTime:
+            pywhatkit.sendwhatmsg_instantly(ph, msg, 20)
+            speak("Message sent")
+
+        elif "instantly" in whatTime:
+            pywhatkit.sendwhatmsg_instantly(ph, msg, 20)
+            speak("Message sent")
+
+        else:
+            speak("Time in Hour!")
+            hour = int(listenCommand())
+            speak("Time in minutes!")
+            minutes = int(listenCommand())
+            speak("okay sir, message will be send on time")
+            pywhatkit.sendwhatmsg(ph, msg, hour, minutes, 20)
+
+
+def openApps(query):
+    speak("opening right away!")
+
+    if "vs code" in query:
+        os.startfile(
+            "C://Users//Suyash//AppData//Local//Programs//Microsoft VS Code//Code.exe")
+
+    elif "whatsapp" in query:
+        os.startfile(
+            "C://Users//Suyash//AppData//Local//WhatsApp//WhatsApp.exe")
+
+    elif "chrome" in query:
+        os.startfile(
+            "C://Program Files//Google//Chrome//Application//chrome.exe")
+
+    elif "wikipedia" in query:
+        webbrowser.open("https://www.wikipedia.com/")
+
+    elif "stackoverflow" in query:
+        webbrowser.open("https://www.stackoverflow.com/")
+
+    elif "facebook" in query:
+        webbrowser.open("https://www.facebook.com/")
+
+    elif "twitter" in query:
+        webbrowser.open("https://www.twitter.com/")
+
+    elif "instagram" in query:
+        webbrowser.open("https://www.instagram.com/")
+
+    elif "google" in query:
+        webbrowser.open("https://www.google.com/")
+
+    elif "maps" in query:
+        webbrowser.open("https://www.google.com/maps/")
+
+    elif "news" in query:
+        webbrowser.open(
+            "https://news.google.com/topstories?hl=en-IN&gl=IN&ceid=IN:en")
+
+    elif "mail" in query:
+        webbrowser.open("https://mail.google.com/mail/")
+
+    elif "youtube" in query:
+        webbrowser.open("https://www.youtube.com/")
+
+    elif "gmail" in query:
+        webbrowser.open("https://www.mail.google.com/")
+
+    elif "meet" in query or "google meet" in query:
+        webbrowser.open("https://www.meet.google.com/")
+
+    elif "notepad" in query:
+        os.startfile(
+            "C://ProgramData//Microsoft//Windows//Start Menu//Programs//Accessories//Notepad")
+
+    elif "wordpad" in query:
+        os.startfile(
+            "C://ProgramData//Microsoft//Windows//Start Menu//Programs//Accessories//Wordpad")
+
+    elif "paint" in query:
+        os.startfile(
+            "C://ProgramData//Microsoft//Windows//Start Menu//Programs//Accessories//Paint")
+
+    elif "control panel" in query:
+        os.startfile(
+            "C://Users//gupta//AppData//Roaming//Microsoft//Windows//Start Menu//Programs//System Tools//Control Panel")
+
+    elif "powershel" in query:
+        os.startfile(
+            "C://Users//gupta//AppData//Roaming//Microsoft//Windows//Start Menu//Programs//Windows PowerShell//Windows PowerShell")
+
+    elif "calculator" in query:
+        subprocess.call("calc.exe")
+
+
+def closeApp(query):
+    speak("Closing the application!")
+
+    if "chrome" in query:
+        os.system("TASKKILL /f /im chrome.exe")
+
+    elif "calculator" in query:
+        os.system("TASKKILL /f /im calc.exe")
+
+    elif "paint" in query:
+        os.system("TASKKILL /f /im mspaint.exe")
+
+    elif "vs code" in query:
+        os.system("TASKKILL /f /im Code.exe")
+
+    elif "whatsapp" in query:
+        os.system("TASKKILL /f /im WhatsApp.exe")
+
+
+def youTubeAuto():
+
+    speak("Activating youtube automation....")
+    speak('Please remember to speak "stop automation" to deactivate youtube automation mode!')
+    speak("Youtube under control, give me command sir")
+    while True:
+
+        query = listenCommand()
+
+        if "pause" in query or "continue" in query:
+            keyboard.press("space bar")
+
+        elif "mute" in query:
+            keyboard.press("m")
+
+        elif "skip" in query:
+            keyboard.press("l")
+
+        elif "rewind" in query:
+            keyboard.press("j")
+
+        elif "full screen" in query:
+            keyboard.press("f")
+
+        elif "theater mode" in query:
+            keyboard.press("t")
+
+        elif "previous" in query:
+            keyboard.press("P")
+
+        elif "next" in query:
+            keyboard.press("N")
+
+        elif "search" in query or "open" in query:
+            if "open" in query:
+                query = query.replace("open", "")
+            if "search" in query:
+                query.replace("search", "")
+            query = query.replace("on youtube", "")
+            query = query.replace("LAXUS", "")
+            speak("Ok sir, searching on youtube!")
+            web = "https://www.youtube.com/results?search_query=" + query
+            webbrowser.open(web)
+            speak("That's what I found for you!")
+
+        elif "play" in query:
+            query = query.replace("LAXUS", "")
+            query = query.replace("on youtube", "")
+            query = query.replace("play", "")
+            pywhatkit.playonyt(query)
+            speak("Keep your headphone ready, It's about to play")
+
+        elif "stop automation" in query or "stop controls" in query or "deactivate" in query:
+            speak("Deactivating youtube automation mode....")
+            break
+
+
+def chromeAuto():
+    speak("Activating Chrome automation....")
+    speak('Please remember to speak "stop automation" to deactivate Chrome automation mode!')
+    speak("Chrome under control, give me command sir")
+    while True:
+
+        query = listenCommand()
+
+        if "close this tab" in query or "close current tab" in query or "delete the tab" in query or "delete this tab" in query or "delete current tab" in query or "delete the tab" in query:
+            keyboard.press_and_release("ctrl + w")
+
+        elif "open new tab" in query or "new tab" in query:
+            keyboard.press_and_release("ctrl + t")
+
+        elif "open new tab in incognito" in query or "new tab in incognito" in query:
+            keyboard.press_and_release("ctrl + shift + n")
+
+        elif "next tab" in query:
+            keyboard.press_and_release("ctrl +  tab")
+
+        elif "previous tab" in query:
+            keyboard.press_and_release("ctrl + shift + tab")
+
+        elif "rightmost tab" in query or "latest tab" in query:
+            keyboard.press_and_release("ctrl + 9")
+
+        elif "close cureent window" in query or "close the current window" in query:
+            keyboard.press_and_release("alt + F4")
+
+        elif "close chrome" in query or "close google chrome" in query:
+            os.system("TASKKILL /f /im chrome.exe")
+
+        elif "open history" in query or "show history" in query:
+            keyboard.press_and_release("ctrl + h")
+
+        elif "open downloads" in query or "show downloads" in query:
+            keyboard.press_and_release("ctrl + j")
+
+        elif "save page" in query or "save current page" in query:
+            keyboard.press_and_release("ctrl + s")
+
+        elif "bookmark" in query:
+            keyboard.press_and_release("ctrl + d")
+
+        elif "print" in query:
+            keyboard.press_and_release("ctrl + p")
+
+        elif "top of the page" in query or "page top" in query:
+            keyboard.press_and_release("Home")
+
+        elif "bottom of the page" in query or "page bottom" in query:
+            keyboard.press_and_release("End")
+
+        elif "search" in query:
+            if "open" in query:
+                query = query.replace("open", "")
+            if "search" in query:
+                query.replace("search", "")
+            query = query.replace("LAXUS", "")
+            query = query.replace("on google", "")
+            speak("Ok sir, searching on google!")
+            pywhatkit.search(query)
+            speak("That's what I found for you!")
+
+        elif "stop automation" in query or "stop controls" in query or "deactivate" in query:
+            speak("Deactivating chrome automation mode....")
+            break
+
+
+def dictionary():
+    speak("Activating Dictionary..")
+    speak("Tell me the problem sir")
+    query = listenCommand()
+    if "meaning" in query:
+        query = query.replace("what is the meaning of ", "")
+        query = query.replace("meaning of ", "")
+        query = query.replace("?", "")
+        result = diction.meaning(query)
+        speak(f"The meaning of {query} is {result}")
+
+    elif "synonym" in query:
+        query = query.replace("what is the synonym of ", "")
+        query = query.replace("synonym of ", "")
+        query = query.replace("?", "")
+        result = diction.synonym(query)
+        speak(f"The meaning of {query} is {result}")
+
+    elif "antonym" in query:
+        query = query.replace("what is the antonym of ", "")
+        query = query.replace("antonym of ", "")
+        query = query.replace("?", "")
+        result = diction.antonym(query)
+        speak(f"The meaning of {query} is {result}")
+
+
+def sendMail():
+    speak("E-mail will be only sent if sender's Gmail account has enabled less secure apps to access.")
+    try:
+        speak("Now, please tell the exact email id of the receiver")
+        receiver_id = listenCommand()
+        receiver_id = receiver_id.replace(" ", "")
+        receiver_id = receiver_id.replace("at the rate", "@")
+        receiver_id = receiver_id.replace("dot", ".")
+        receiver_id = receiver_id.lower()
+        speak("Now, speak the message you want to send")
+        msg = listenCommand()
+        sender_id = "Sender_email_id@gmail.com"
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.ehlo()
+        server.starttls()
+        server.login(sender_id, "Sender_email_id_password")
+        server.sendmail(sender_id, receiver_id, msg)
+        server.close()
+        speak("Mail has been successfully sent!")
+
+    except EXCEPTION as e:
+        print(e)
+        speak("Unable to send email at the moment!")
+
+
+def taskExe():
+
+    speak("Hello Sir! I am Laxus at your service. I am created by the students of Group 15 of triple IT Kota. How may I help you?")
+
+    try:
+        while True:
+
+            query = listenCommand().lower()
+
+            if "hello" in query:
+                speak("Hello Sir, I am Lexus, your personal AI Assistant")
+                speak("How may I help you?")
+
+            elif "wake up" in query:
+                speak("Hello Sir, I am ready to rock, what's your command?")
+
+            elif "how are you" in query:
+                speak("I am Fine!")
+                speak("What about you sir?")
+
+            elif "thank you" in query or "thanks" in query or "you are good" in query or "excellent work" in query:
+                speak("My pleasure sir!")
+
+            elif "bad work" in query or "you are dumb" in query or "need to update" in query or "fool" in query:
+                speak(
+                    "Sorry sir! I wish that i will be more helpful to you after the next update")
+
+            elif "i am fine" in query:
+                speak("That's good to hear!")
+
+            elif "you need a break" in query:
+                speak("Ok sir, You can call me any time!")
+                break
+
+            elif "take a break" in query:
+                speak("Ok sir, You can call me any time!")
+                break
+
+            elif "kya haal hai" in query:
+                speak("Main acha hoon aap batao!")
+
+            elif "bye" in query:
+                speak("bye sir, see you soon!")
+                break
+
+            elif "quit" in query:
+                speak("bye sir, see you soon!")
+                break
+
+            elif "are you married" in query:
+                speak("Not yet sir, I am still searching for a perfect match!")
+
+            elif "what about alexa" in query or "don't you like alexa" in query or "do you like alexa" in query:
+                speak("I like her by the way but she likes my friend JARVIS!")
+
+            elif "What about siri?" in query or "don't you like siri" in query or "do you like siri" in query:
+                speak("She is too rich to handle!")
+
+            elif "what about google assistant" in query or "don't you like google assistant?" in query or "do you like google assistant" in query:
+                speak("I like her but only as a good friend")
+
+            elif "Who created you" in query or "Who found you" in query or "who is your creator" in query or "who is your founder" in query:
+                speak("I am created by the students of Group 15 of triple IT Kota with utter sincerity and dedication")
+
+            elif "are you a human?" in query or "are you a living thing?" in query:
+                speak(
+                    "No, I am not a human but I have an artificial intelligent mind that's why I am always there to help you sir?")
+
+            elif "do you have feelings" in query or "how do you feel" in query:
+                speak("I don't have any feelings except loyalty towards you sir!")
+
+            elif "why were you created" in query:
+                speak(
+                    "I was created as personal AI assistant to help my master in performming easy tasks on his voice commands")
+
+            elif "on youtube" in query:
+                if "open" in query:
+                    query = query.replace("open", "")
+                if "search" in query:
+                    query.replace("search", "")
+                query = query.replace("on youtube", "")
+                query = query.replace("LAXUS", "")
+                speak("Ok sir, searching on youtube!")
+                web = "https://www.youtube.com/results?search_query=" + query
+                webbrowser.open(web)
+                speak("That's what I found for you!")
+
+            elif "on google" in query:
+                if "open" in query:
+                    query = query.replace("open", "")
+                if "search" in query:
+                    query.replace("search", "")
+                query = query.replace("LAXUS", "")
+                query = query.replace("on google", "")
+                speak("Ok sir, searching on google!")
+                pywhatkit.search(query)
+                speak("That's what I found for you!")
+
+            elif "website" in query:
+                speak("Okay sir! searching right away")
+                if "open" in query:
+                    query = query.replace("open", "")
+                if "search" in query:
+                    query = query.replace("search", "")
+                query = query.replace(" ", "")
+                query = query.replace("website", "")
+                query = query.replace("LAXUS", "")
+                web = "https://www." + query + ".com"
+                webbrowser.open(web)
+                speak("That's what I found for you!")
+
+            elif "launch" in query:
+                speak("Okay sir! searching right away")
+                if "open" in query:
+                    query = query.replace("open", "")
+                if "search" in query:
+                    query = query.replace("search", "")
+                query = query.replace(" ", "")
+                query = query.replace("website", "")
+                query = query.replace("launch", "")
+                query = query.replace("LAXUS", "")
+                web = "https://www." + query + ".com"
+                webbrowser.open(web)
+                speak("That's what I found for you!")
+
+            elif "play song" in query:
+                query = query.replace("LAXUS", "")
+                speak("What would you like to listen?")
+                musicName = listenCommand()
+                pywhatkit.playonyt(musicName)
+                speak("Keep your headphone ready, It's about to play")
+
+            elif "play" in query:
+                query = query.replace("LAXUS", "")
+                query = query.replace("on youtube", "")
+                query = query.replace("play", "")
+                pywhatkit.playonyt(query)
+                speak("Keep your headphone ready, It's about to play")
+
+            elif "wikipedia" in query:
+                query = query.remove("wikipedia", "")
+                query = query.replace("Lexus", "")
+                speak("Searching wikipwdia....")
+                result = wikipedia.summary(query, sentences=2)
+                speak(f"Acoording to wikipedia: {result} ")
+
+            elif "whatsapp message" in query:
+                whatsapp()
+
+            elif "screenshot" in query:
+                speak("Ok sir, What should i name the screenshot?")
+                path1 = listenCommand()
+                path1name = path1 + ".png"
+                path2 = "C://Users//gupta//Pictures//screenshot//" + path1name
+                ss = pyautogui.screenshot()
+                ss.save(path2)
+                speak("saved screenshot!")
+
+            elif "open" in query:
+                if "translator" in query or "translate" in query:
+                    tran()
+                else:
+                    openApps(query)
+
+            elif "close" in query:
+                closeApp(query)
+
+            elif "activate youtube" in query or "youtube automation" in query or "youtube controls" in query or "automate youtube" in query:
+                youTubeAuto()
+
+            elif "activate chrome" in query or "chrome automation" in query or "chrome controls" in query or "automate chrome" in query or "activate google chrome" in query or "google chrome automation" in query or "google chrome controls" in query or "automate google chrome" in query:
+                chromeAuto()
+
+            elif "joke" in query or "jokes" in query:
+                joke = pyjokes.get_joke()
+                speak(joke)
+
+            elif "repeat me" in query or "talking tom" in query or "repeat after me" in query or "repeat what i say" in query:
+                speak("Talking Tom at your service sir!")
+                tom = listenCommand()
+                speak("tom")
+
+            elif "dictionary" in query:
+                dictionary()
+
+            elif "alarm" in query:
+                speak("Enter the time!")
+                time = input(">> Enter the time:")
+
+                while True:
+                    Time_Ac = datetime.datetime().now()
+                    now = Time_Ac.strftime("%H:%M:%S")
+
+                    if now == time:
+                        speak("Wakey-Wakey, Wake up sir!")
+                        playsound('krishna_flute.mp3')
+
+                    elif now > time:
+                        break
+
+            elif "download a youtube video" in query or "youtube downloader" in query or "video downloader" in query or "download video" in query:
+                root = Tk()
+                root.geometry("500x300")
+                root.resizable(0, 0)
+                root.title("YOUTUBE VIDEO DOWNLOADER")
+                speak("Enter the link")
+
+                Label(root, text="TouTube Video Downloader",
+                      font="arial 15 bold").pack()
+                link = StringVar()
+                Label(root, text="Paste video URL Here",
+                      font="aerial 15 bold").place(x=120, y=80)
+                Entry(root, width=70, textvariable=link).place(x=32, y=120)
+
+                def videoDownloader():
+                    url = YouTube(str(link.get()))
+                    video = url.streams.first()
+                    video.download()
+                    Label(root, text="Downloaded",
+                          font="arial 15").place(x=180, y=210)
+
+                Button(root, text="Download", font="arial 15 bold", bg="sky blue",
+                       padx=2, command=videoDownloader).place(x=180, y=150)
+
+                root.mainloop()
+                speak("Video Downloaded")
+
+            elif "translator" in query or "translate" in query:
+                tran()
+
+            elif "remember this" in query or "set reminder" in query or "remember to" in query or "remember that" in query or "take note" in query:
+                query = query.replace("remember this", "")
+                query = query.replace("set reminder", "")
+                query = query.replace("remember to", "")
+                query = query.replace("remember that", "")
+                query = query.replace("LAXUS", "")
+                query = query.replace("take note", "")
+                speak("Saving to remind you that " + query)
+                remember = open("reminder.txt", "w")
+                remember.write(query)
+                remember.close()
+                speak("Reminder is saved!")
+
+            elif "what do you remember?" in query or "any reminder" in query or "forgot" in query or "forgetting" in query:
+                remember = open("reminder.txt", "r")
+                speak("You told me that " + remember.read())
+                remember.close()
+
+            elif "the time" in query:
+                strtTime = datetime.datetime.now().strftime("%H:%M:%S")
+                speak(f"Sir, The time if {strtTime}")
+
+            elif "where is" in query or "locate" in query:
+                query = query.replace("where is", "")
+                query = query.replace("locate", "")
+                query = query.replace("located", "")
+                location = query
+                speak(f"Locating {location}")
+                webbrowser.open(
+                    "https://www.google.nl/maps/place/" + location + "")
+
+            elif "send email" in query or "email" in query:
+                sendMail()
+
+            elif "weather" in query:
+
+                api_key = "964d58b99ca06f3a44db182f6e1eab0e"
+                base_url = "http://api.openweathermap.org/data/2.5/weather?"
+                speak("please tell me the city")
+                city_name = listenCommand()
+                complete_url = base_url + "?q=" + city_name + "appid=" + api_key + "units=metric"
+                response = requests.get(complete_url)
+                x = response.json()
+                print(x)
+                if x["cod"] != "404":
+                    y = x["main"]
+                    current_temperature = str(y["temp"])
+                    current_humidiy = str(y["humidity"])
+                    z = x["weather"]
+                    weather_description = z[0]["description"]
+                    speak(
+                        f" Temperature in kelvin is {current_temperature}, humidity in percentage {current_humidiy}, Weather description as follows, {weather_description}")
+
+                else:
+                    speak(" City Not Found ")
+
+            elif 'news' in query:
+
+                try:
+                    jsonObj = urlopen(
+                        "https://newsapi.org/v2/top-headlines?sources=google-news-in&apiKey=438d4560e2154095b97aa29c35ad8747")
+                    data = json.load(jsonObj)
+                    i = 1
+
+                    speak("here are some of the top News")
+                    print('''=============== TOP NEWS ============''' + '\n')
+
+                    for item in data['articles']:
+
+                        speak(str(i) + '. ' + item['title'] + '\n')
+                        print(item['description'] + '\n')
+                        if i > 5:
+                            break
+                except Exception as e:
+
+                    print(str(e))
+
+            elif "none" == query:
+                continue
+
+            else:
+                if "open" in query:
+                    query = query.replace("open", "")
+                if "search" in query:
+                    query.replace("search", "")
+                query = query.replace("LAXUS", "")
+                query = query.replace("on google", "")
+                speak("That's what I found for you on the web!")
+                pywhatkit.search(query)
+
+      
+
+    except Exception as e:
+        print(e)
+taskExe()
